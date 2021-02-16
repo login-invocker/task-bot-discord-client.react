@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   BrowserRouter as Router,
   useHistory,
-  useLocation
 } from "react-router-dom";
 import { Form, Input, Button } from 'antd';
 import {registerUserService} from '../services/user-service'

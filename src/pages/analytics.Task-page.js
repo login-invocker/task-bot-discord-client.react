@@ -12,17 +12,20 @@ import {
 
 
 const ManagerTimePage = () => {
-    const [reload, setReload] = React.useState({})
     const [dataTask, setDataTask] = React.useState({})
-    
+
     React.useEffect( () => {
          getDataForBarChar().then(data=> {
-            console.log(data)
             setDataTask(data)
             if(data){
                 Notification({
                     type: "success",
                     message: "Lấy dữ liệu thành công!"
+                })
+            }else{
+                Notification({
+                    type: "success",
+                    message: "Không có dữ liệu hoặc không lấy được dữ liệu!"
                 })
             }
         })
@@ -35,12 +38,11 @@ const ManagerTimePage = () => {
             endDate: dateStrings[1]
         }
         getDataForBarChar(ranger).then(data=> {
-            console.log(data)
             setDataTask(data)
             if(data){
                 Notification({
                     type: "success",
-                    message: "Lấy dữ liệu mới công!"
+                    message: "Lấy dữ liệu mới thành công!"
                 })
             }
         })
@@ -66,7 +68,17 @@ const ManagerTimePage = () => {
             </Space>,
             <Button type="primary" 
             icon={<SyncOutlined spin/>}
-            onClick={() => setReload()}>
+            onClick={() => {
+                getDataForBarChar().then(data=> {
+                    setDataTask(data)
+                    if(data){
+                        Notification({
+                            type: "success",
+                            message: "Đã load xong dữ liệu mới!"
+                        })
+                    }
+                })
+            }}>
                 Click to async data
             </Button>
         ]}

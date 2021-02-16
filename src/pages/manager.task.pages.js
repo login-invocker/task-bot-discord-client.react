@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import "./manage-task.css"
-import { Table, Input, Popconfirm, Form, 
-  Typography, DatePicker, Alert, Tag, Switch,
-  Button
+import { 
+  Table, Input,
+  Popconfirm, Form, 
+  Typography, DatePicker,
+  Alert, Tag, Switch,
+  Button, Space
 } from 'antd';
+import Highlighter from 'react-highlight-words';
 import {
   SyncOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 
 import Notification from "../Components/nofication-component";
@@ -15,70 +20,83 @@ import HeaderPage from '../Components/header-pages'
 
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'YYYY-MM-DD'];
 
-const EditableCell = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === 'chinh-xac-la-date' 
-  ? <DatePicker  
-  format={dateFormatList}  />
-  : inputType === "switch"
-  ? <Switch checkedChildren="Yes" unCheckedChildren="No" />
-  : <Input />;
-  return (
-    <td {...restProps}>
-      {editing && inputType !== 'switch'? (
-        <Form.Item
-          name={dataIndex}
-          style={{
-            margin: 0,
-          }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) 
-      : editing && inputType === 'switch'
-      ? (
-        <Form.Item
-          name={dataIndex}
-          // switch
-          valuePropName= {(record.isModel === true || record.isModel === "Yes") && dataIndex === "isModel" || (record.isImportant === true || record.isImportant === "Yes" ) && dataIndex === "isImportant" ||  (record.isEmergency === true || record.isEmergency === "Yes") && dataIndex === "isEmergency" ? 'checked': ''}
-          style={{
-            margin: 0,
-          }}
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) 
-      
-      : (
-        children
-      )}
-    </td>
-  );
-};
-
 const ManagerTask = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+
+  useEffect(() => {
+    
+    callApi()
+  }, [])
+  // 
+
+  function getColumnSearchProps(dataIndex) {
+    return {
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            // ref={node => {
+            //   this.searchInput = node;
+            // }}
+            placeholder={`Search ${dataIndex}`}
+            value={selectedKeys[0]}
+            onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+            onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Search
+            </Button>
+            <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+              Reset
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+      onFilter: (value, record) =>
+        record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      onFilterDropdownVisibleChange: visible => {
+        if (visible) {
+          // setTimeout(() => this.searchInput.select());
+        }
+      },
+      render: text =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        ),
+    }
+  };
+
+  function handleSearch(selectedKeys, confirm, dataIndex) {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  function handleReset(clearFilters) {
+    clearFilters();
+    setSearchText('');
+  };
+
+
   const callApi = async () => {
     const dataMap = await mapTask()
       if(dataMap){
@@ -94,32 +112,6 @@ const ManagerTask = () => {
         message: "Lấy dữ liệu thất bại!"
       })
     }
-  }
-  useEffect(() => {
-    
-    callApi()
-  }, [])
-
-  const mapTask = async () => {
-    const dataRes = await getTasks();
-    let dataMap = []
-    if(dataRes){
-      for (let i = 0; i < dataRes.length; i++) {
-          dataMap.push({
-            key: i.toString(),
-            id: dataRes[i]['_id'],
-            title: dataRes[i]['title'],
-            content: dataRes[i]['content'] || "Chưa cập nhập",
-            status: dataRes[i]['status'] ? "Đã hoàn thành" : "Chưa hoàn thành",
-            date: moment(dataRes[i]['date']).format(dateFormatList[2]),
-            isModel: dataRes[i]['isModel'] === true ? 'Yes': 'No',
-            isImportant: dataRes[i]['isImportant'] === true ? "Yes": "No",
-            isEmergency: dataRes[i]['isEmergency'] === true? "Yes": 'No',
-          });
-     }
-      
-     return dataMap
-  }
   }
 
   const isEditing = (record) => record.key === editingKey;
@@ -235,6 +227,7 @@ const ManagerTask = () => {
       dataIndex: 'title',
       width: '20%',
       editable: true,
+      ...getColumnSearchProps('title')
     },
     {
       title: 'Status Task',
@@ -251,7 +244,17 @@ const ManagerTask = () => {
                 </Tag>
           </>
         )
-      }
+      },
+      filters: [
+        {
+          text: 'Done',
+          value: "Đã hoàn thành",
+        },{
+          text: 'unfinished',
+          value: "Chưa hoàn thành",
+        }
+      ],
+      onFilter: (value, record) => (value === record.status)
     },
     {
       title: 'Content Task',
@@ -337,7 +340,7 @@ const ManagerTask = () => {
               Save
             </a>
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
+              <a href="javascript:;">Cancel</a>
             </Popconfirm>
             <a
               href="javascript:;"
@@ -359,6 +362,7 @@ const ManagerTask = () => {
       },
     },
   ];
+
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -379,6 +383,8 @@ const ManagerTask = () => {
       }),
     };
   });
+
+  // component end
   return (
     <>
     <HeaderPage onback="null" title="Manager Task"
@@ -411,6 +417,90 @@ const ManagerTask = () => {
       />
     </Form>
     </>
+  );
+};
+
+const mapTask = async () => {
+  const dataRes = await getTasks();
+  let dataMap = []
+  if(dataRes){
+    for (let i = 0; i < dataRes.length; i++) {
+        dataMap.push({
+          key: i.toString(),
+          id: dataRes[i]['_id'],
+          title: dataRes[i]['title'],
+          content: dataRes[i]['content'] || "Chưa cập nhập",
+          status: dataRes[i]['status'] ? "Đã hoàn thành" : "Chưa hoàn thành",
+          date: moment(dataRes[i]['date']).format(dateFormatList[2]),
+          isModel: dataRes[i]['isModel'] === true ? 'Yes': 'No',
+          isImportant: dataRes[i]['isImportant'] === true ? "Yes": "No",
+          isEmergency: dataRes[i]['isEmergency'] === true? "Yes": 'No',
+        });
+   }
+    
+   return dataMap
+}
+}
+
+const EditableCell = ({
+  editing,
+  dataIndex,
+  title,
+  inputType,
+  record,
+  index,
+  children,
+  ...restProps
+}) => {
+  const inputNode = inputType === 'chinh-xac-la-date' 
+  ? <DatePicker  
+  format={dateFormatList}  />
+  : inputType === "switch"
+  ? <Switch checkedChildren="Yes" unCheckedChildren="No" />
+  : <Input />;
+  return (
+    <td {...restProps}>
+      {editing && inputType !== 'switch'? (
+        <Form.Item
+          name={dataIndex}
+          style={{
+            margin: 0,
+          }}
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) 
+      : editing && inputType === 'switch'
+      ? (
+        <Form.Item
+          name={dataIndex}
+          // switch
+          valuePropName= {record.isModel === true || record.isModel === "Yes" && dataIndex === "isModel"
+          || record.isImportant === true || record.isImportant === "Yes"  && dataIndex === "isImportant"
+          || record.isEmergency === true || record.isEmergency === "Yes" && dataIndex === "isEmergency" ? 'checked': ''}
+          style={{
+            margin: 0,
+          }}
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          {inputNode}
+        </Form.Item>
+      ) 
+      
+      : (
+        children
+      )}
+    </td>
   );
 };
 

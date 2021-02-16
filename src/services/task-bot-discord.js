@@ -1,6 +1,6 @@
 const axios = require('axios')
 const config = require('../config/config')
-const moment = require('moment')
+
 const createtask = async(task) => {
     try{
         axios.post(`${config.API_URL}/api/task`, {
