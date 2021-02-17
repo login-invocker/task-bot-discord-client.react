@@ -1,18 +1,33 @@
 import React from 'react'
 
-import { Statistic, Card } from 'antd';
+import { Statistic, Card, Row, Col, Button } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import CountUp from 'react-countup'
 import './Card.css'
 
-function NumberCard({ icon, color, title, number, countUp, value, isUp }) {
+function NumberCard({  title, numberC, countUp, value, isUp, color, loading }) {
   return (
     <Card>
       {title}
+      <Row>
+      <Col flex={5}></Col>
+      <Col flex={1}> <p className="number" >
+      <CountUp
+            start={0}
+            end={numberC}
+            duration={2.75}
+            useEasing
+            useGrouping
+            separator=","
+            {...(countUp || {})}
+          />
+          </p></Col>
+      </Row>
           <Statistic
             title="So với hôm qua:"
             value={value}
             precision={2}
-            valueStyle={ isUp? { color: '#3f8600' }: { color: '#cf1322' }}
+            valueStyle={ {color}}
             prefix={isUp? <ArrowUpOutlined />: <ArrowDownOutlined />}
             suffix="%"
           />

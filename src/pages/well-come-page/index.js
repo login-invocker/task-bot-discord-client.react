@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import logo from './moon.svg';
 import './Wellcome.css';
 import {
     BrowserRouter as Router,
