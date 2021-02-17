@@ -51,7 +51,7 @@ const ManagerTimePage = () => {
     return (
         <>
         <HeaderPage onback="null" 
-        title="Manager Time with matrix EISENHOWER"
+        title="Analytic Task"
         extra={[
             <Space direction="vertical" size={12}>
                 <RangePicker

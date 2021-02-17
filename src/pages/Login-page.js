@@ -8,7 +8,7 @@ import { Form, Input, Button } from 'antd';
 import {authContext} from '../App'
 import {loginService} from '../services/user-service'
 import Notification from "../Components/nofication-component";
-import HeaderPage from '../Components/header-pages'
+// import HeaderPage from '../Components/header-pages'
 
 function useAuth() {
   return useContext(authContext);
@@ -65,7 +65,6 @@ const tailLayout = {
 
   return (
     <div>
-       <HeaderPage onback="null" title="Login"/>
       <p>You must log in to view the page at {from.pathname}</p>
       <Form
       {...layout}
