@@ -12,7 +12,8 @@ import TaskManager from "../pages/manager.task.pages"
 import TimeManager from "../pages/ManagerTime-pages"
 import RegisterPage from "../pages/Register-User.page"
 import AnalyticsTaskPage from "../pages/analytics.Task-page"
-
+import HomePage from "../pages/Home-page"
+import WellCome from "../pages/well-come-page"
 import {authContext} from '../App'
 
 function useAuth() {
@@ -27,8 +28,20 @@ function useAuth() {
 // way you'd do inside a `<Switch>`.
 const routes = [
   {
+    path: "/wellcome",
+    component: WellCome,
+    isPrivate: false
+  },
+  {
+    path: "/home",
+    component: HomePage,
+    isPrivate: true
+  },
+  {
     path: "/login",
-    component: LoginPage
+    component: LoginPage,
+    isPrivate: false
+
   },
   {
     path: "/create-task",

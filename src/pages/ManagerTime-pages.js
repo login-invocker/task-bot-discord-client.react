@@ -16,7 +16,7 @@ const ManagerTimePage = () => {
     // const [color, setColors] = React.useState([])
     React.useEffect(async () => {
         const dataTask = await getMatrixTasks()
-        if(dataTask){
+        if(dataTask && dataTask.length > 0){
             Notification({
                 type: "success",
                 message: "Lấy dữ liệu thành công!"
@@ -32,9 +32,19 @@ const ManagerTimePage = () => {
             }
             setBg()
             setReload('')
+        }else if(dataTask.length === 0){
+            Notification({
+                type: "warning",
+                message: "Không có dữ liệu!"
+            })
+        }else{
+            Notification({
+                type: "error",
+                message: "Lấy dữ liệu thất bại!"
+            })
         }
 
-    })
+    },[])
 
     const wrap2ArrayTask = () => {
         const titleArray = allTask.map(task => task.title);

@@ -91,11 +91,34 @@ const getDataForBarChar = async(dateRanger) => {
     }
 }
 
+const getTaskByDate = async (date) => {
+    const requestdata = {
+        "date" : date
+    }
+    try{
+        const response = await axios.post(`${config.API_URL}/api/task/by-date`, requestdata)
+        return response.data
+    }catch{
+        return false
+    }
+}
+
+const resetTask = async () => {
+    
+    try{
+        const response = await axios.post(`${config.API_URL}/api/task/reset`)
+        return response.status === 200? true: false
+    }catch{
+        return false
+    } 
+}
 export{
     createtask,
     getTasks,
     updateTask,
     removeTask,
     getMatrixTasks,
-    getDataForBarChar
+    getDataForBarChar,
+    getTaskByDate,
+    resetTask
 }
