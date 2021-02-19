@@ -102,6 +102,16 @@ const getTaskByDate = async (date) => {
         return false
     }
 }
+
+const resetTask = async () => {
+    
+    try{
+        const response = await axios.post(`${config.API_URL}/api/task/reset`)
+        return response.status === 200? true: false
+    }catch{
+        return false
+    } 
+}
 export{
     createtask,
     getTasks,
@@ -109,5 +119,6 @@ export{
     removeTask,
     getMatrixTasks,
     getDataForBarChar,
-    getTaskByDate
+    getTaskByDate,
+    resetTask
 }

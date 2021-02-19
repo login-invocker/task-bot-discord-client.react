@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import HeaderPage from '../Components/header-pages'
 import { Row, Col,Card, Button } from 'antd';
-import {getTaskByDate} from '../services/task-bot-discord'
+import {getTaskByDate, resetTask} from '../services/task-bot-discord'
 import CardComponent from '../Components/home-component/Card'
 import moment from "moment"
 import Notification from "../Components/nofication-component";
 import {
   SyncOutlined,
+  PoweroffOutlined
 } from '@ant-design/icons';
 
 const style = { background: '#0092ff', padding: '8px 0' };
@@ -98,6 +99,7 @@ const HomePage = () =>{
             </Button>
         ]}
     />
+    <p>Task Ananytic</p>
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
       {numberCards}
     </Row>
@@ -110,8 +112,27 @@ const HomePage = () =>{
         </Card>
       </Col>
       <Col span={6}>
-        <Card title="Card title">
-          Card content
+        <Card title="Reset task new day">
+        <Button
+          type="danger"
+          icon={<PoweroffOutlined />}
+          onClick={async() => {
+              const isReset = await resetTask();
+              if(isReset === true){
+                return Notification({
+                  type: "success",
+                  message: "Reset task success"
+                })
+              }else{
+                return Notification({
+                  type: "error",
+                  message: "Error reset task!"
+                })
+              }
+          }}
+        >
+          Reset!
+        </Button>
         </Card>
       </Col>
     </Row>
