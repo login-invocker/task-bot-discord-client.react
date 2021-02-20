@@ -39,26 +39,25 @@ const HomePage = () =>{
       })
       countTaskUnfinished[0] =  fistData.length - countTaskDone[0];
       countTaskUnfinished[1] = secondData.length - countTaskDone[1];
-      
 
       setCardData([
         {
           numberC: fistData.length,
 
-          value: (fistData.length/secondData.length)*100 - 100,
+          value: secondData.length === 0?fistData.length: (fistData.length/secondData.length)*100 - 100 ,
           isUp: fistData.length > secondData.length ? true : false,
           title: `All Task hôm nay: `,
           color: fistData.length > secondData.length ? "#3f8600": "#cf1322"
         },
         {
-          value: (countTaskDone[0]/countTaskDone[1])*100 - 100,
+          value: countTaskDone[1] === 0?countTaskDone[0]: (countTaskDone[0]/countTaskDone[1])*100 - 100,
           isUp: countTaskDone[0] > countTaskDone[1] ? true : false,
           title: `Task Done hôm nay: `,
           numberC: `${countTaskDone[0]}`,
           color: countTaskDone[0] > countTaskDone[1] ? "#3f8600": "#cf1322"
         },
         {
-          value: (countTaskUnfinished[0]/countTaskUnfinished[1])*100 - 100,
+          value: countTaskUnfinished[1] === 0? countTaskUnfinished[0]:(countTaskUnfinished[0]/countTaskUnfinished[1])*100 - 100,
           isUp: countTaskUnfinished[0] > countTaskUnfinished[1] ? true : false,
           title: `Task chưa hoàn thành hôm nay: `,
           numberC: countTaskUnfinished[0],
