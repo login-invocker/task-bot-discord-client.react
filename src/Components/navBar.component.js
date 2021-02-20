@@ -10,7 +10,9 @@ import {
   PlusOutlined, 
   DatabaseOutlined, 
   FundTwoTone, 
-  PieChartTwoTone } 
+  PieChartTwoTone,
+  IeOutlined
+} 
 from '@ant-design/icons';
 const { Sider } = Layout;
 
@@ -51,6 +53,9 @@ const  MenuComponent = () =>{
       <Link to="/register">Register</Link>
       </Menu.Item>
 
+      <Menu.Item key="7" icon={<IeOutlined />}>
+      <Link to="/vocabulary">Vocabulary Building</Link>
+      </Menu.Item>
       </Menu>
   </Sider>
 }

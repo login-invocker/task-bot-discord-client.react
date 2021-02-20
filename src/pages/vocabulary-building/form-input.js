@@ -1,9 +1,7 @@
 import React from "react";
-import HeaderPages from '../Components/header-pages'
 import { Form, Input, Button, Switch } from 'antd';
-import {createtask} from '../services/task-bot-discord'
-import Notification from '../Components/nofication-component';
-
+import Notification from '../../Components/nofication-component';
+import { saveVocabulary } from '../../services/vocabulary-service'
 const layout = {
   labelCol: {
     span: 8,
@@ -21,23 +19,22 @@ const tailLayout = {
 
 const CreateTask = () =>{
     const onFinish = async (values) => {
-        const isCreate = await createtask(values)
+        const isCreate = await saveVocabulary(values)
         if(isCreate)
         return Notification({
             type: "success",
-            message: "Tạo task thành công"
+            message: "Tạo từ vưng thành công"
           })
         else
         return Notification({
             type: "error",
-            message: "Tạo task thất bại"
+            message: "Tạo từ vựng thất bại"
           })
       };
     
       const onFinishFailed = (errorInfo) => {
       };
   return <>
-  <HeaderPages onback="null" title="Create Task" subTitle="Create a today task"/>
   <Form
       {...layout}
       name="basic"
@@ -48,12 +45,12 @@ const CreateTask = () =>{
       onFinishFailed={onFinishFailed}
     >
       <Form.Item
-        label="Title"
-        name="title"
+        label="English"
+        name="english"
         rules={[
           {
             required: true,
-            message: 'Please input your title of task',
+            message: 'Please input your word englisg',
           },
         ]}
       >
@@ -61,36 +58,28 @@ const CreateTask = () =>{
       </Form.Item>
 
       <Form.Item
-        label="Content"
-        name="content"
+        label="Vietnamess"
+        name="vietnamese"
         rules={[
           {
+            required: true,
             message: 'Please input your content!',
           },
         ]}
       >
         <Input />
       </Form.Item>
-
       <Form.Item
-        label="Model Task"
-        name="isModel"
+        label="E.x"
+        name="example"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your content!',
+          },
+        ]}
       >
-      <Switch checkedChildren="Yes" unCheckedChildren="No" />
-      </Form.Item>
-      {/* Việc này có quan trọng không? */}
-      <Form.Item
-        label="Task important?"
-        name="isImportant"
-      >
-      <Switch checkedChildren="Yes" unCheckedChildren="No" />
-      </Form.Item>
-            {/* Việc này có khẩn cấp không? */}
-            <Form.Item
-        label="Task emergency?"
-        name="isEmergency"
-      >
-      <Switch checkedChildren="Yes"  unCheckedChildren="No" />
+        <Input />
       </Form.Item>
 
       <Form.Item {...tailLayout}>

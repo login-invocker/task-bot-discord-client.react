@@ -11,9 +11,6 @@ function WellCome() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Một ngày tuyệt vời phải không nào? Hày cùng xem hôm nay bạn có việc gì cần làm nhé!
-        </p>
         <Router>
       <div>
         <ul>

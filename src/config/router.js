@@ -15,7 +15,7 @@ import AnalyticsTaskPage from "../pages/analytics.Task-page"
 import HomePage from "../pages/Home-page"
 import WellCome from "../pages/well-come-page"
 import {authContext} from '../App'
-
+import VocabularyBuildingPage from '../pages/vocabulary-building/vocabulary-building-page'
 function useAuth() {
   return useContext(authContext);
 }
@@ -66,7 +66,13 @@ const routes = [
     path: "/register",
     component: RegisterPage,
     isPrivate: false
+  },
+  {
+    path: "/vocabulary",
+    component: VocabularyBuildingPage,
+    isPrivate: true
   }
+  
 
 ];
 
